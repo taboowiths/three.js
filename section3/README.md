@@ -2,58 +2,15 @@
 
 ## module 방식으로 시작
 
-https://cdnjs.com/libraries/three.js 여기서 모듈 import 하기
+1. [🔗 기본 프레임 만들기](https://github.com/taboowiths/three.js/blob/210c985a57bc32260a5210b5164710ff30513123/section3/01_default.js)
 
-```jsx
-import * as THREE from "https://cdnjs.cloudflare.com/ajax/libs/three.js/0.174.0/three.module.min.js";
-```
+   https://cdnjs.com/libraries/three.js 여기서 모듈 import 하기
 
-js 스크립트
+   ```jsx
+   import * as THREE from "https://cdnjs.cloudflare.com/ajax/libs/three.js/0.174.0/three.module.min.js";
+   ```
 
-```jsx
-import * as THREE from "https://cdnjs.cloudflare.com/ajax/libs/three.js/0.174.0/three.module.js";
-
-let WIDTH = window.innerWidth;
-let HEIGHT = window.innerHeight;
-
-const scene = new THREE.Scene();
-const camera = new THREE.PerspectiveCamera(75, WIDTH / HEIGHT, 0.1, 1000);
-camera.position.set(50, 50, 50);
-
-const renderer = new THREE.WebGLRenderer({ antialias: true });
-renderer.setSize(WIDTH, HEIGHT);
-renderer.setClearColor(0x0e2255);
-document.body.appendChild(renderer.domElement);
-
-{
-  const axes = new THREE.AxesHelper(50);
-  scene.add(axes);
-
-  const gridHelper = new THREE.GridHelper(70, 20);
-  scene.add(gridHelper);
-}
-
-const animate = () => {
-  camera.lookAt(scene.position);
-  camera.updateProjectionMatrix();
-
-  renderer.render(scene, camera);
-  requestAnimationFrame(animate);
-};
-
-const stageResize = () => {
-  WIDTH = window.innerWidth;
-  HEIGHT = window.innerHeight;
-
-  renderer.setSize(WIDTH, HEIGHT);
-  camera.aspect = WIDTH / HEIGHT;
-};
-
-animate();
-window.addEventListener("resize", stageResize);
-```
-
-## 카메라 마우스로 제어 해보기
+## [🔗 카메라 마우스로 제어 해보기](https://github.com/taboowiths/three.js/blob/210c985a57bc32260a5210b5164710ff30513123/section3/02_default.js)
 
 조명 넣기
 
@@ -108,18 +65,36 @@ npm install --save-dev vite
 npx vite
 ```
 
-1. 기존 import 방식 변경
+2. 기존 import 방식 변경
 
 ```jsx
 import * as THREE from "three";
 import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 ```
 
-1. 카메라 컨트롤 메소드
+3. [🔗 카메라 컨트롤 메소드](https://github.com/taboowiths/three.js/blob/210c985a57bc32260a5210b5164710ff30513123/section3/03_default.js)
 
 ```jsx
 const controls = new OrbitControls(camera, renderer.domElement);
 controls.enableDamping = true; // 부드러운 모션
 ```
 
-## 마우스 위치값으로 3D 제어
+## [🔗 마우스 위치값으로 3D 제어](https://github.com/taboowiths/three.js/blob/main/section3/04_default.js)
+
+마우스가 움직일 때마다 해당 위치에 비례해 마우스의 방향대로 회전하도록 한다.
+
+1. 마우스의 위치를 `targetX`, `targetY`로 변환 (속도 조절용 0.002 배율)
+
+```jsx
+targetX = mouseX * 0.002;
+targetY = mouseY * 0.002;
+```
+
+1. 박스를 마우스 위치에 비례해 회전.
+
+```jsx
+if (boxMesh) {
+  boxMesh.rotation.y += 0.05 * (targetX - boxMesh.rotation.y);
+  boxMesh.rotation.x += 0.05 * (targetY - boxMesh.rotation.x);
+}
+```
